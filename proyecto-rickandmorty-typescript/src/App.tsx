@@ -1,10 +1,20 @@
 import { useEffect, useState } from "react";
-import { CharList } from "./components/CharList/CharList";
+import { CharList, CharObject } from "./components/CharList/CharList";
 
-function App() {
-  const [chars, setChars] = useState(null);
-  const [name, setName] = useState("");
-  const [isAlive, setIsAlive] = useState(false);
+export interface CharData {
+  info: {
+    count: number;
+    next: string;
+    pages: number;
+    prev: null;
+  };
+  results: CharObject[];
+}
+
+const App = () => {
+  const [chars, setChars] = useState<CharData | null>(null);
+  const [name, setName] = useState<string>("");
+  const [isAlive, setIsAlive] = useState<boolean>(false);
 
   useEffect(() => {
     const getChars = async () => {
@@ -25,8 +35,6 @@ function App() {
 
     getChars();
   }, []);
-
-  console.log(isAlive);
 
   return (
     <>
@@ -51,10 +59,10 @@ function App() {
       {chars ? (
         <CharList chars={chars} name={name} isAlive={isAlive} />
       ) : (
-        <p>Cargando personajes...</p>
+        <p className="text-white ml-2">Cargando personajes...</p>
       )}
     </>
   );
-}
+};
 
 export default App;
