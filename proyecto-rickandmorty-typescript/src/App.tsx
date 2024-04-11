@@ -6,6 +6,7 @@ const App = () => {
   const chars = useGetChars();
   const [name, setName] = useState<string>("");
   const [isAlive, setIsAlive] = useState<boolean>(false);
+  const [isDead, setIsDead] = useState<boolean>(false);
 
   return (
     <>
@@ -26,9 +27,16 @@ const App = () => {
           />
           <p className="text-white ml-2">Alive</p>
         </label>
+        <label className="flex p-4">
+          <input
+            type="checkbox"
+            onChange={(e) => setIsDead(e.target.checked)}
+          />
+          <p className="text-white ml-2">Dead</p>
+        </label>
       </form>
       {chars ? (
-        <CharList chars={chars} name={name} isAlive={isAlive} />
+        <CharList chars={chars} name={name} isAlive={isAlive} isDead={isDead} />
       ) : (
         <p className="text-white ml-2">Cargando personajes...</p>
       )}

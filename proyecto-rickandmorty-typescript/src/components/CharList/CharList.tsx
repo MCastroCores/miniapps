@@ -1,7 +1,7 @@
 import { CharListProps } from "../../interfaces";
 import { CharObject } from "../../interfaces";
 
-export const CharList = ({ chars, name, isAlive }: CharListProps) => {
+export const CharList = ({ chars, name, isAlive, isDead }: CharListProps) => {
   return (
     <ul
       className="flex flex-col place-items-center
@@ -12,6 +12,9 @@ export const CharList = ({ chars, name, isAlive }: CharListProps) => {
           .filter((char: CharObject) => char.name.toLowerCase().includes(name))
           .filter((char: CharObject) =>
             isAlive ? char.status === "Alive" : true
+          )
+          .filter((char: CharObject) =>
+            isDead ? char.status === "Dead" : true
           )
           .map((char) => {
             return (

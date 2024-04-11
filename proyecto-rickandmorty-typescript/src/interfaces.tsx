@@ -33,4 +33,5 @@ export interface CharListProps {
   chars: CharData;
   name: string;
   isAlive: boolean;
+  isDead: boolean;
 }
