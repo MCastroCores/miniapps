@@ -1,31 +1,5 @@
-import { CharData } from "../../App";
-
-export interface CharObject {
-  created: string;
-  episode: string[];
-  gender: string;
-  id: number;
-  image: string;
-  location: {
-    name: string;
-    url: string;
-  };
-  name: string;
-  origin: {
-    name: string;
-    url: string;
-  };
-  species: string;
-  status: string;
-  type: string;
-  url: string;
-}
-
-interface CharListProps {
-  chars: CharData;
-  name: string;
-  isAlive: boolean;
-}
+import { CharListProps } from "../../interfaces";
+import { CharObject } from "../../interfaces";
 
 export const CharList = ({ chars, name, isAlive }: CharListProps) => {
   return (

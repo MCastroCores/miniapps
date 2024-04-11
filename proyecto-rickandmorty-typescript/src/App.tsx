@@ -1,40 +1,11 @@
-import { useEffect, useState } from "react";
-import { CharList, CharObject } from "./components/CharList/CharList";
-
-export interface CharData {
-  info: {
-    count: number;
-    next: string;
-    pages: number;
-    prev: null;
-  };
-  results: CharObject[];
-}
+import { useState } from "react";
+import { CharList } from "./components/CharList/CharList";
+import { useGetChars } from "./hooks/useGetChars";
 
 const App = () => {
-  const [chars, setChars] = useState<CharData | null>(null);
+  const chars = useGetChars();
   const [name, setName] = useState<string>("");
   const [isAlive, setIsAlive] = useState<boolean>(false);
-
-  useEffect(() => {
-    const getChars = async () => {
-      try {
-        const resp = await fetch("https://rickandmortyapi.com/api/character");
-
-        if (!resp.ok) {
-          throw new Error();
-        }
-
-        const data = await resp.json();
-        console.log(data);
-        setChars(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    getChars();
-  }, []);
 
   return (
     <>
