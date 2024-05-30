@@ -1,0 +1,102 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+img {
+  display: block;
+  width: 100px;
+}
+
+body {
+  font-family: "Press Start 2P", system-ui;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 100vw;
+}
+
+h1 {
+  color: black;
+  background-color: white;
+  max-width: 500px;
+  padding: 1rem;
+  border: 2px solid black;
+  text-align: center;
+}
+
+main {
+  color: black;
+  background-color: white;
+  max-width: 500px;
+  padding: 1rem;
+  border: 2px solid black;
+}
+
+main form {
+  margin-bottom: 1rem;
+  margin-left: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+article {
+  padding: 1rem;
+  border: 2px solid black;
+  margin-bottom: 2px;
+}
+
+.fotos {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1rem;
+}
+
+.inputsearch {
+  margin-top: 1rem;
+}
+
+input {
+  width: 150px;
+  height: 25px;
+  background-color: white;
+  font-family: "Press Start 2P", system-ui;
+  font-size: 0.6rem;
+  color: black;
+  border-color: rgb(0, 0, 0);
+  padding: 2px;
+}
+
+input::placeholder {
+  background-color: white;
+  font-family: "Press Start 2P", system-ui;
+  font-size: 0.6rem;
+  color: black;
+}
+
+input:focus {
+  outline: 2px solid green;
+}
+
+.containersearch {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1rem;
+  overflow: auto;
+  gap: 4px;
+}
+
+.creado {
+  font-family: "Press Start 2P", system-ui;
+  background-color: white;
+  color: black;
+  border-color: black;
+  padding: 8px;
+  margin-top: 4px;
+  font-size: 0.6rem;
+}

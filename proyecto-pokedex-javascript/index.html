@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <title>POKEDEX</title>
+  </head>
+  <body>
+    <header>
+      <h1>POKEDEX</h1>
+    </header>
+    <main>
+      <form name="main">
+        <label for="name" class="labelinput">NOMBRE DEL POKEMON:</label>
+        <input
+          type="text"
+          name="name"
+          id="name"
+          class="inputsearch"
+          placeholder="Pokemon..."
+        />
+      </form>
+      <div class="containersearch"></div>
+      <section class="ficha">
+        <article class="nombre">NOMBRE:</article>
+        <article class="altura">ALTURA:</article>
+        <article class="peso">PESO:</article>
+        <article class="vida">VIDA:</article>
+        <article class="ataque">ATAQUE:</article>
+        <article class="defensa">DEFENSA:</article>
+        <article class="ataqueespecial">ATAQUE ESPECIAL:</article>
+        <article class="defensaespecial">DEFENSA ESPECIAL:</article>
+        <article class="velocidad">VELOCIDAD:</article>
+        <article class="tipos">TIPOS:</article>
+        <div class="fotos">
+          <article class="fotodelante">
+            <img
+              class="imgdelante"
+              src="./media/pika.png"
+              alt="foto por delante"
+            />
+          </article>
+          <article class="fotodetras">
+            <img
+              class="imgdetras"
+              src="./media/pika.png"
+              alt="foto por detras"
+            />
+          </article>
+        </div>
+      </section>
+    </main>
+    <script src="./main.js" type="module"></script>
+  </body>
+</html>
