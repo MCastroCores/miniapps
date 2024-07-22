@@ -4,7 +4,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { auth, userExists } from "../../firebase/firebase.js";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext.jsx";
 
@@ -21,8 +21,10 @@ export const Login = () => {
       if (user) {
         const isRegistered = await userExists(user.uid);
 
-        if (!isRegistered) {
+        if (isRegistered) {
           navigate("/");
+        } else {
+          navigate("/register");
         }
       }
     });

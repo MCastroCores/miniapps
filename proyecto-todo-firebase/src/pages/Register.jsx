@@ -1,15 +1,15 @@
-import {
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  signInWithPopup,
-} from "firebase/auth";
-import { auth, userExists } from "../../firebase/firebase.js";
-import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, registerNewUser, userExists } from "../../firebase/firebase.js";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext.jsx";
 
-export const Login = () => {
+export const Register = () => {
   // Estado para guardar las variables que queramos del usuario registrado con google
-  const [currentUser, setCurrentUser] = useState(1);
+  const { user } = useContext(UserContext);
+
+  // Estado para manejar el completado del registro
+  const [isRegisteredUser, setIsRegisteredUser] = useState(false);
 
   // Variable navigate para redirección
   const navigate = useNavigate();
@@ -21,47 +21,31 @@ export const Login = () => {
 
         if (isRegistered) {
           navigate("/");
-        } else {
-          setCurrentUser(user);
-          setState(2);
         }
       }
     });
-  }, [navigate]);
+  }, [navigate, isRegisteredUser]);
 
-  const handleClickToAutenticate = async () => {
-    try {
-      const googleProvider = new GoogleAuthProvider();
+  const handleClickToRegister = async (user) => {
+    console.log(user);
 
-      const singInWithGoogle = async (GoogleAuthProvider) => {
-        try {
-          const res = await signInWithPopup(auth, googleProvider);
-          setUser(res.user);
-          setState(1);
-        } catch (error) {
-          console.log(error);
-        }
-      };
+    const uid = user.uid;
+    const email = user.reloadUserInfo.email;
 
-      await singInWithGoogle();
-    } catch (error) {
-      console.log(error);
-    }
+    const newUser = { uid, email };
+    console.log(newUser);
+    await registerNewUser(newUser);
+    setIsRegisteredUser(true);
   };
 
-  const handleUserStateChanged = async (user) => {};
-
-  const handleClickToRegister = async (user) => {};
-
   return (
-    <main className="w-screen h-screen flex justify-center items-center">
-      <section>
+    <main className="w-screen h-screen flex justify-center">
+      <section className="flex flex-col justify-around">
         <button
-          onClick={handleClickToRegister}
+          onClick={() => handleClickToRegister(user)}
           className="bg-slate-700 text-white py-2 px-4 font-bold rounded-lg"
         >
-          Bienvenid@ {currentUser.displayName}, pulsa este botón para
-          registrarte
+          Bienvenid@ {user?.displayName}, pulsa este botón para registrarte
         </button>
       </section>
     </main>
