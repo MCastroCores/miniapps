@@ -113,3 +113,13 @@ export const updateTask = async (task) => {
     console.log(error);
   }
 };
+
+export const deleteTask = async (id) => {
+  try {
+    const docRef = doc(db, "tasks", id);
+    const res = await deleteDoc(docRef);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};

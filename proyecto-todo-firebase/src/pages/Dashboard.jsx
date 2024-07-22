@@ -8,6 +8,7 @@ import {
   registerNewTask,
   getTasks,
   updateTask,
+  deleteTask,
 } from "../../firebase/firebase.js";
 
 export const Dashboard = () => {
@@ -69,13 +70,24 @@ export const Dashboard = () => {
     }
   };
 
+  const handleDeleteTask = async (id) => {
+    try {
+      await deleteTask(id);
+      setUpdate(!update);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <main className="w-screen h-screen">
+    <main className="min-w-screen min-h-screen">
       <section className="flex flex-col p-5">
-        <h1 className="text-3xl font-bold text-center">
+        <h1 className="text-3xl font-bold text-center mt-10 mb-10">
           Dashboard de {user?.email}
         </h1>
-        <h2 className="text-3xl font-bold text-center mt-5">AÑADE UNA TAREA</h2>
+        <h2 className="text-3xl font-bold text-center mt-10">
+          AÑADE UNA TAREA
+        </h2>
         <input
           type="text"
           value={taskToUpload}
@@ -84,12 +96,14 @@ export const Dashboard = () => {
           onChange={(e) => setTaskToUpload(e.target.value)}
         />
         <button
-          className="bg-slate-700 text-white py-2 px-4 font-bold rounded-lg place-self-center mt-20"
+          className="bg-slate-700 text-white py-2 px-4 font-bold rounded-lg place-self-center mt-5 mb-10"
           onClick={() => uploadTask(user, taskToUpload)}
         >
           SUBIR TAREA
         </button>
-        <h2 className="text-3xl font-bold text-center mt-5">LISTA DE TAREAS</h2>
+        <h2 className="text-3xl font-bold text-center mt-10">
+          LISTA DE TAREAS
+        </h2>
         {tasks ? (
           <ul className="w-3/4 place-self-center flex flex-col border border-black p-6 mt-10 rounded-md">
             {tasks.map((task) => (
@@ -100,7 +114,20 @@ export const Dashboard = () => {
                 key={task.id}
               >
                 {task.text}
-                <button onClick={() => updateTaskActive(task)}>V</button>
+                <div>
+                  <button
+                    className="px-5"
+                    onClick={() => updateTaskActive(task)}
+                  >
+                    V
+                  </button>
+                  <button
+                    className="px-5"
+                    onClick={() => handleDeleteTask(task.id)}
+                  >
+                    D
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
