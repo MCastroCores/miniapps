@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext.jsx";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -9,6 +9,8 @@ import {
   getTasks,
   updateTask,
   deleteTask,
+  setUserProfilePhoto,
+  getUserProfilePhotoUrl,
 } from "../../firebase/firebase.js";
 
 export const Dashboard = () => {
@@ -17,6 +19,10 @@ export const Dashboard = () => {
   const [taskToUpload, setTaskToUpload] = useState("");
   const [tasks, setTasks] = useState([]);
   const [update, setUpdate] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [profileImage, setProfileImage] = useState(null);
+  const inputFileRef = useRef();
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
@@ -34,14 +40,25 @@ export const Dashboard = () => {
 
   useEffect(() => {
     const fetchTasks = async (user) => {
-      console.log(user.uid);
-      const updatedTasks = await getTasks(user.uid);
-      console.log(updatedTasks);
-      setTasks(updatedTasks);
+      if (user?.uid) {
+        const updatedTasks = await getTasks(user.uid);
+        console.log(updatedTasks);
+        setTasks(updatedTasks);
+      }
     };
 
     fetchTasks(user);
   }, [user, update]);
+
+  useEffect(() => {
+    const getProfileImage = async () => {
+      if (user?.profilePicture) {
+        const res = await getUserProfilePhotoUrl(user.profilePicture);
+        setProfileImage(res);
+      }
+    };
+    getProfileImage();
+  }, [user?.profilePicture]);
 
   const uploadTask = async (user, task) => {
     try {
@@ -79,12 +96,71 @@ export const Dashboard = () => {
     }
   };
 
+  const handleFileSelected = (e) => {
+    e.preventDefault();
+    setSelectedImage(e.target.files[0]);
+    setPreviewImage(URL.createObjectURL(e.target.files[0]));
+  };
+
+  const handleFileUpload = async (e) => {
+    try {
+      e.preventDefault();
+      console.log(selectedImage);
+      if (selectedImage) {
+        const fileReader = new FileReader();
+        fileReader.readAsArrayBuffer(selectedImage);
+        fileReader.onload = async () => {
+          try {
+            const imageData = fileReader.result;
+            console.log(user.uid);
+            const res = await setUserProfilePhoto(user.uid, imageData);
+            console.log(res);
+          } catch (error) {
+            console.log(error);
+          }
+        };
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <main className="min-w-screen min-h-screen">
       <section className="flex flex-col p-5">
+        <img
+          src={profileImage}
+          alt={`foto de perfil de ${user?.email}`}
+          width={100}
+        />
         <h1 className="text-3xl font-bold text-center mt-10 mb-10">
           Dashboard de {user?.email}
         </h1>
+        <article className="flex flex-col justify-center items-center gap-y-5">
+          <form
+            onSubmit={handleFileUpload}
+            className="flex place-content-center gap-x-5"
+          >
+            Elige foto de perfil:
+            <input
+              type="file"
+              ref={inputFileRef}
+              accept=".png"
+              onChange={handleFileSelected}
+            />
+            <button className="bg-slate-700 text-white py-2 px-4 font-bold rounded-lg place-self-center">
+              Subir imagen
+            </button>
+          </form>
+          {previewImage && (
+            <div>
+              <img
+                src={previewImage}
+                alt={`foto de perfil de ${user?.email}`}
+                width={100}
+              />
+            </div>
+          )}
+        </article>
         <h2 className="text-3xl font-bold text-center mt-10">
           AÑADE UNA TAREA
         </h2>

@@ -123,3 +123,23 @@ export const deleteTask = async (id) => {
     console.log(error);
   }
 };
+
+export const setUserProfilePhoto = async (uid, file) => {
+  try {
+    const imageRef = ref(storage, `images/${uid}`);
+    const resUpload = await uploadBytes(imageRef, file);
+    return resUpload;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getUserProfilePhotoUrl = async (profilePicture) => {
+  try {
+    const imageRef = ref(storage, profilePicture);
+    const url = await getDownloadURL(imageRef);
+    return url;
+  } catch (error) {
+    console.log(error);
+  }
+};
