@@ -1,17 +1,10 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  getBytes,
-} from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
   getFirestore,
   collection,
-  addDoc,
   getDocs,
   doc,
   getDoc,
@@ -20,6 +13,7 @@ import {
   setDoc,
   deleteDoc,
 } from "firebase/firestore";
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 console.log(import.meta.env.VITE_AUTH_DOMAIN);
@@ -62,6 +56,16 @@ export const registerNewUser = async (user) => {
     const collectionRef = collection(db, "users");
     const docRef = doc(collectionRef, `${user.uid}`);
     await setDoc(docRef, user);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updateUser = async (user, profilePicture) => {
+  try {
+    const collectionRef = collection(db, "users");
+    const docRef = doc(collectionRef, `${user.uid}`);
+    await setDoc(docRef, { ...user, profilePicture });
   } catch (error) {
     console.log(error);
   }

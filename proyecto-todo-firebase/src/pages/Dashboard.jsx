@@ -1,42 +1,25 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext.jsx";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import {
   auth,
-  userExists,
   registerNewTask,
   getTasks,
   updateTask,
   deleteTask,
   setUserProfilePhoto,
   getUserProfilePhotoUrl,
+  updateUser,
 } from "../../firebase/firebase.js";
 
 export const Dashboard = () => {
-  const navigate = useNavigate();
-  const { user } = useContext(UserContext);
+  const { user, reload, setReload } = useContext(UserContext);
   const [taskToUpload, setTaskToUpload] = useState("");
   const [tasks, setTasks] = useState([]);
   const [update, setUpdate] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
-  const inputFileRef = useRef();
-
-  useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const isRegistered = await userExists(user.uid);
-
-        if (isRegistered) {
-          navigate("/");
-        } else {
-          navigate("/register");
-        }
-      }
-    });
-  }, [navigate]);
 
   useEffect(() => {
     const fetchTasks = async (user) => {
@@ -58,7 +41,7 @@ export const Dashboard = () => {
       }
     };
     getProfileImage();
-  }, [user?.profilePicture]);
+  }, [user, update]);
 
   const uploadTask = async (user, task) => {
     try {
@@ -105,16 +88,16 @@ export const Dashboard = () => {
   const handleFileUpload = async (e) => {
     try {
       e.preventDefault();
-      console.log(selectedImage);
       if (selectedImage) {
         const fileReader = new FileReader();
         fileReader.readAsArrayBuffer(selectedImage);
         fileReader.onload = async () => {
           try {
             const imageData = fileReader.result;
-            console.log(user.uid);
             const res = await setUserProfilePhoto(user.uid, imageData);
-            console.log(res);
+            await updateUser(user, res.metadata.fullPath);
+            setPreviewImage(null);
+            setReload(!reload);
           } catch (error) {
             console.log(error);
           }
@@ -126,12 +109,14 @@ export const Dashboard = () => {
   };
   return (
     <main className="min-w-screen min-h-screen">
-      <section className="flex flex-col p-5">
-        <img
-          src={profileImage}
-          alt={`foto de perfil de ${user?.email}`}
-          width={100}
-        />
+      <section className="flex flex-col justify-center items-center p-5">
+        {profileImage && (
+          <img
+            src={profileImage}
+            alt={`foto de perfil de ${user?.email}`}
+            width={100}
+          />
+        )}
         <h1 className="text-3xl font-bold text-center mt-10 mb-10">
           Dashboard de {user?.email}
         </h1>
@@ -141,12 +126,7 @@ export const Dashboard = () => {
             className="flex place-content-center gap-x-5"
           >
             Elige foto de perfil:
-            <input
-              type="file"
-              ref={inputFileRef}
-              accept=".png"
-              onChange={handleFileSelected}
-            />
+            <input type="file" accept=".png" onChange={handleFileSelected} />
             <button className="bg-slate-700 text-white py-2 px-4 font-bold rounded-lg place-self-center">
               Subir imagen
             </button>
