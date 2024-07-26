@@ -1,114 +1,31 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { UserContext } from "../context/UserContext.jsx";
 import { signOut } from "firebase/auth";
-import {
-  auth,
-  registerNewTask,
-  getTasks,
-  updateTask,
-  deleteTask,
-  setUserProfilePhoto,
-  getUserProfilePhotoUrl,
-  updateUser,
-} from "../../firebase/firebase.js";
+import { auth } from "../../firebase/firebase.js";
+import { useTasks } from "../hooks/useTasks.jsx";
+import { useImage } from "../hooks/useImage.jsx";
 
 export const Dashboard = () => {
-  const { user, reload, setReload } = useContext(UserContext);
-  const [taskToUpload, setTaskToUpload] = useState("");
-  const [tasks, setTasks] = useState([]);
-  const [update, setUpdate] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [previewImage, setPreviewImage] = useState(null);
-  const [profileImage, setProfileImage] = useState(null);
+  // Elementos necesarios para gestionar el contexto de usuario
+  const { user } = useContext(UserContext);
 
-  useEffect(() => {
-    const fetchTasks = async (user) => {
-      if (user?.uid) {
-        const updatedTasks = await getTasks(user.uid);
-        console.log(updatedTasks);
-        setTasks(updatedTasks);
-      }
-    };
+  // Elementos necesarios para la gestión de las tareas
+  const {
+    taskToUpload,
+    setTaskToUpload,
+    tasks,
+    error,
+    uploadTask,
+    updateTaskActive,
+    handleDeleteTask,
+  } = useTasks();
 
-    fetchTasks(user);
-  }, [user, update]);
+  // Elementos necesarios para gestionar la subida de imagen de perfil
+  const { previewImage, profileImage, handleFileSelected, handleFileUpload } =
+    useImage();
 
-  useEffect(() => {
-    const getProfileImage = async () => {
-      if (user?.profilePicture) {
-        const res = await getUserProfilePhotoUrl(user.profilePicture);
-        setProfileImage(res);
-      }
-    };
-    getProfileImage();
-  }, [user, update]);
-
-  const uploadTask = async (user, task) => {
-    try {
-      const newTask = {
-        id: crypto.randomUUID(),
-        userId: user.uid,
-        text: task,
-        isActive: true,
-      };
-      await registerNewTask(newTask);
-      setTaskToUpload("");
-      setUpdate(!update);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const updateTaskActive = async (task) => {
-    try {
-      const newTask = { ...task, isActive: !task.isActive };
-      console.log(newTask);
-      await updateTask(newTask);
-      setUpdate(!update);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleDeleteTask = async (id) => {
-    try {
-      await deleteTask(id);
-      setUpdate(!update);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleFileSelected = (e) => {
-    e.preventDefault();
-    setSelectedImage(e.target.files[0]);
-    setPreviewImage(URL.createObjectURL(e.target.files[0]));
-  };
-
-  const handleFileUpload = async (e) => {
-    try {
-      e.preventDefault();
-      if (selectedImage) {
-        const fileReader = new FileReader();
-        fileReader.readAsArrayBuffer(selectedImage);
-        fileReader.onload = async () => {
-          try {
-            const imageData = fileReader.result;
-            const res = await setUserProfilePhoto(user.uid, imageData);
-            await updateUser(user, res.metadata.fullPath);
-            setPreviewImage(null);
-            setReload(!reload);
-          } catch (error) {
-            console.log(error);
-          }
-        };
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
   return (
-    <main className="min-w-screen min-h-screen">
+    <main className="min-w-screen min-h-screen roboto-light">
       <section className="flex flex-col justify-center items-center p-5">
         {profileImage && (
           <img
@@ -151,6 +68,7 @@ export const Dashboard = () => {
           placeholder="Tarea..."
           onChange={(e) => setTaskToUpload(e.target.value)}
         />
+        {error && <p className="text-sm text-red-400">{error}</p>}
         <button
           className="bg-slate-700 text-white py-2 px-4 font-bold rounded-lg place-self-center mt-5 mb-10"
           onClick={() => uploadTask(user, taskToUpload)}
@@ -165,7 +83,7 @@ export const Dashboard = () => {
             {tasks.map((task) => (
               <li
                 className={`font-bold p-3 flex justify-between ${
-                  task.isActive ? "" : "line-through"
+                  task.isActive ? "" : "line-through text-green-400"
                 }`}
                 key={task.id}
               >

@@ -9,7 +9,7 @@ export const Login = () => {
   };
 
   return (
-    <main className="w-screen h-screen flex place-content-center">
+    <main className="w-screen h-screen flex place-content-center roboto-light">
       <section className="flex flex-col items-center justify-around">
         <h1 className="text-4xl font-bold">- TODO LIST -</h1>
         <button

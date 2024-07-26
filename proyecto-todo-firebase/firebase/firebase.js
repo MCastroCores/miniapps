@@ -44,7 +44,6 @@ export const userExists = async (uid) => {
   try {
     const docRef = doc(db, "users", uid);
     const res = await getDoc(docRef);
-    console.log(res.exists());
     return res.exists();
   } catch (error) {
     console.log(error);
@@ -75,7 +74,6 @@ export const getUser = async (uid) => {
   try {
     const docRef = doc(db, "users", uid);
     const res = await getDoc(docRef);
-    console.log(res.data());
     return res.data();
   } catch (error) {
     console.log(error);
