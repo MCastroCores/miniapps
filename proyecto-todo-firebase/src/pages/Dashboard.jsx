@@ -4,6 +4,9 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../firebase/firebase.js";
 import { useTasks } from "../hooks/useTasks.jsx";
 import { useImage } from "../hooks/useImage.jsx";
+import { Button } from "@headlessui/react";
+import { FaCheck } from "react-icons/fa";
+import { MdDeleteForever } from "react-icons/md";
 
 export const Dashboard = () => {
   // Elementos necesarios para gestionar el contexto de usuario
@@ -88,19 +91,19 @@ export const Dashboard = () => {
                 key={task.id}
               >
                 {task.text}
-                <div>
-                  <button
-                    className="px-5"
+                <div className="flex gap-x-5">
+                  <Button
+                    className="rounded bg-green-500 py-2 px-4 text-sm text-white data-[hover]:bg-green-950 data-[active]:bg-sky-700"
                     onClick={() => updateTaskActive(task)}
                   >
-                    V
-                  </button>
-                  <button
-                    className="px-5"
+                    <FaCheck />
+                  </Button>
+                  <Button
+                    className="rounded bg-red-500 py-2 px-4 text-sm text-white data-[hover]:bg-red-800 data-[active]:bg-red-800"
                     onClick={() => handleDeleteTask(task.id)}
                   >
-                    D
-                  </button>
+                    <MdDeleteForever />
+                  </Button>
                 </div>
               </li>
             ))}
