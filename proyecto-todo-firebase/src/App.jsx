@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { Dashboard } from "./pages/Dashboard.jsx";
 import { Login } from "./pages/Login.jsx";
 import { UserProvider } from "./context/UserContext.jsx";
@@ -11,6 +11,7 @@ export const App = () => {
         <Route path="/" element={<Dashboard />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </UserProvider>
   );

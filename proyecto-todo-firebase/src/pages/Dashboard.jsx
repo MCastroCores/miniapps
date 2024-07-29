@@ -5,8 +5,9 @@ import { auth } from "../../firebase/firebase.js";
 import { useTasks } from "../hooks/useTasks.jsx";
 import { useImage } from "../hooks/useImage.jsx";
 import { Button } from "@headlessui/react";
-import { FaCheck } from "react-icons/fa";
+import { GoShieldCheck, GoShieldX } from "react-icons/go";
 import { MdDeleteForever } from "react-icons/md";
+import clsx from "clsx";
 
 export const Dashboard = () => {
   // Elementos necesarios para gestionar el contexto de usuario
@@ -38,9 +39,9 @@ export const Dashboard = () => {
           />
         )}
         <h1 className="text-3xl font-bold text-center mt-10 mb-10">
-          Dashboard de {user?.email}
+          Dashboard de {user?.email.split("@")[0]}
         </h1>
-        <article className="flex flex-col justify-center items-center gap-y-5">
+        <article className="hidden sm:flex flex-col justify-center items-center gap-y-5">
           <form
             onSubmit={handleFileUpload}
             className="flex place-content-center gap-x-5"
@@ -55,7 +56,7 @@ export const Dashboard = () => {
             <div>
               <img
                 src={previewImage}
-                alt={`foto de perfil de ${user?.email}`}
+                alt={`foto de perfil de ${user?.email.split("@")[0]}`}
                 width={100}
               />
             </div>
@@ -93,10 +94,21 @@ export const Dashboard = () => {
                 {task.text}
                 <div className="flex gap-x-5">
                   <Button
-                    className="rounded bg-green-500 py-2 px-4 text-sm text-white data-[hover]:bg-green-950 data-[active]:bg-sky-700"
+                    className={clsx(
+                      "rounded py-2 px-4 text-sm text-white data-[active]:bg-sky-700",
+                      {
+                        "bg-yellow-500": !task.isActive,
+                        "bg-green-500": task.isActive,
+                      },
+                      {
+                        "data-[hover]:bg-yellow-950": !task.isActive,
+                        "data-[hover]:bg-green-950": task.isActive,
+                      }
+                    )}
+                    // className="rounded bg-green-500 py-2 px-4 text-sm text-white data-[hover]:bg-green-950 data-[active]:bg-sky-700"
                     onClick={() => updateTaskActive(task)}
                   >
-                    <FaCheck />
+                    {task.isActive ? <GoShieldCheck /> : <GoShieldX />}
                   </Button>
                   <Button
                     className="rounded bg-red-500 py-2 px-4 text-sm text-white data-[hover]:bg-red-800 data-[active]:bg-red-800"
